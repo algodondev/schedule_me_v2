@@ -1,7 +1,7 @@
 from tkinter import *
 from entities import *
 import datetime
-import calendar  
+import calendar
 
 root = Tk()
 root.title("Schedule Me")
@@ -17,32 +17,25 @@ month_days_instances = []
 # Funciones para cambiar el mes
 def previous_month():
     global current_month, current_year, month_days_instances
-    # Cambiar al mes anterior
     if current_month == 1:
         current_month = 12
         current_year -= 1
     else:
         current_month -= 1
-
-    # Actualizar los días del mes
     update_days()
 
 def next_month():
     global current_month, current_year, month_days_instances
-    # Cambiar al mes siguiente
     if current_month == 12:
         current_month = 1
         current_year += 1
     else:
         current_month += 1
-
-    # Actualizar los días del mes
     update_days()
 
 # Función para actualizar los días del mes
 def update_days():
     global month_days_instances
-    # Vaciar la lista de días del mes anterior
     for widget in right_frame.winfo_children():
         widget.destroy()
 
@@ -90,7 +83,7 @@ def update_days():
     column_count = 0
 
     # Mostrar días del mes anterior deshabilitados
-    previous_month_day = days_in_previous_month - start_day_of_week + 1  # Empezamos con el último día del mes anterior
+    previous_month_day = days_in_previous_month - start_day_of_week + 1
     for i in range(start_day_of_week):  # Espacios en blanco antes del primer día del mes
         button = Button(right_frame, text=str(previous_month_day), font=("Arial", 14), padx=15, pady=15, bg="lightgray", state="disabled", bd=1, relief="solid")
         button.grid(row=row_count, column=column_count, sticky="nswe")
@@ -99,7 +92,7 @@ def update_days():
 
     # Colocar los días del mes
     for day_instance in month_days_instances:
-        button = Button(right_frame, text=str(day_instance.day), font=("Arial", 14), padx=15, pady=15, bd=1, relief="solid")
+        button = Button(right_frame, text=str(day_instance.day), font=("Arial", 14), padx=15, pady=15, bd=1, relief="solid", command=lambda day=day_instance: show_modal(day))
         button.grid(row=row_count, column=column_count, sticky="nswe")
         column_count += 1
 
@@ -115,15 +108,36 @@ def update_days():
         button.grid(row=row_count, column=i, sticky="nswe")
         next_month_day += 1
 
+# Función para mostrar el modal con la fecha completa
+def show_modal(day_instance):
+    # Crear la ventana emergente (modal)
+    events_modal = Toplevel(root)
+    events_modal.title(f"Day {day_instance.day} details")
+
+    # Bloquear interaccion con la ventana principal
+    events_modal.grab_set()
+    # Bloquear la modificacion del tamaño del modal
+    events_modal.resizable(False, False)
+
+    # Formatear la fecha
+    title_text = day_instance.date.strftime('Events for %A, %B %d %Y')
+    
+    # Etiqueta con la fecha
+    modal_title = Label(events_modal, text=title_text, font=("Arial", 18))
+    modal_title.grid(row=0, column=0, pady=10, padx=40)
+
+    # Botón para cerrar el modal
+    close_button = Button(events_modal, text="Cerrar", command=events_modal.destroy)
+    close_button.grid(row=2, column=0, pady=10)
+    
 # Crear la interfaz
 left_frame = Frame(root, width=300, height=600, bd=1, relief="solid")
-left_frame.grid(column=0, row=0, sticky="nswe", padx=30, pady=30    )
+left_frame.grid(column=0, row=0, sticky="nswe", padx=30, pady=30)
 
 right_frame = Frame(root, width=300, height=600, bg="pink")
 right_frame.grid(column=1, row=0, sticky="nswe", padx=30, pady=30)
 
 # Colocar elementos en el frame izquierda
-
 previous_month_button = Button(left_frame, text="<", font=("Arial", 20), bd=0, relief="flat", command=previous_month)
 previous_month_button.grid(row=0, column=0, pady=(100, 0))
 left_frame.grid_columnconfigure(0, weight=2)
