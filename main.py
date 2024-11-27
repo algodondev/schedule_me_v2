@@ -97,11 +97,17 @@ def update_days():
         column_count += 1
         previous_month_day += 1
 
+    # Check if day has events
+    active_events = []
+    for event in created_events:
+        if event.date.month == current_month and event.date.year == current_year:
+            active_events.append(event)
+
     # Colocar los días del mes
     for day_instance in month_days_instances:
 
         bg_color = "white"	
-        if len(day_instance.events) > 0:
+        if day_instance.date in [event.date for event in active_events]:
             bg_color = "lightgreen"
         
         if day_instance.date == current_date:
@@ -119,10 +125,21 @@ def update_days():
     # Agregar los días que sobran del mes siguiente con botones deshabilitados
     next_month_day = 1
     for i in range(column_count, 7):  # Rellenar con botones deshabilitados si no se completó la semana
-        button = Button(right_frame, text=str(next_month_day), font=("Arial", 14), bg="lightgray", padx=15, pady=15, state="disabled", bd=1, relief="solid")
+        button = Button(right_frame, text=str(next_month_day), font=("Arial", 14), bg="lightgray", padx=15, pady=15, state="disabled")
         button.grid(row=row_count, column=i, sticky="nswe")
         next_month_day += 1
 
+def update_upcoming_events(events):
+    for widget in upcoming_events.winfo_children():
+        widget.destroy()
+
+    events = sorted(events, key=lambda x: x.date)
+
+    for i, event in enumerate(events):
+        label = Label(upcoming_events, text=f"{event.title}: {event.description} - {event.date} - {event.time}", font=("Arial", 14))
+        label.grid(row=i, column=0, pady=10, padx=30)
+
+    upcoming_events.grid(row=2, column=0, columnspan=4, pady=10)
 # Función para mostrar el modal de eventos
 def show_modal(day_instance):
     global created_events
@@ -189,6 +206,8 @@ def show_modal(day_instance):
     events_modal = Toplevel(root)
     events_modal.title(f"Day {day_instance.day} details")
 
+    events_modal.protocol("WM_DELETE_WINDOW", lambda: close_modal(events_modal))
+
     # Bloquear interaccion con la ventana principal
     events_modal.grab_set()
     # Bloquear la modificacion del tamaño del modal
@@ -202,7 +221,7 @@ def show_modal(day_instance):
     modal_title.grid(row=0, column=0, pady=10, padx=40, columnspan=2)
 
     # Mostrar los eventos del día
-    events_frame = Frame(events_modal, width=300, height=200, bd=1, relief="solid", pady=30, padx=50)
+    events_frame = Frame(events_modal, width=300, height=200, pady=30, padx=50)
     events_frame.grid(row=1, column=0, pady=10, padx=40)
 
     show_events(created_events)
@@ -232,16 +251,21 @@ def show_modal(day_instance):
     event_time_dropdown_entry.config(width=8, font=("Arial", 10), state="disabled")
     event_time_dropdown_entry.grid(row=4, column=0, pady=10, padx=40)
 
-    event_save_button = Button(fields_frame, text="Save", font=("Arial", 14), bg="green", fg="white", state="disabled", command=lambda: save_event(day_instance, event_title_entry.get(), event_description_entry.get(), ))
+    event_save_button = Button(fields_frame, text="Save", font=("Arial", 14), bg="green", fg="white", state="disabled", command=lambda: save_event(day_instance, event_title_entry.get(), event_description_entry.get(), selected_time.get()))
     event_save_button.grid(row=5, column=0, pady=10, padx=40)
 
     # Boton para agregar un nuevo evento
     add_event_button = Button(events_modal, text="Add event", font=("Arial", 14), bg="blue", fg="white", command= activate_event_form)
     add_event_button.grid(row=2, column=0, pady=10, padx=40, columnspan=2)
 
+def close_modal(modal):
+    modal.destroy()
+
+    update_days()
+    update_upcoming_events(created_events)
     
 # Crear la interfaz
-left_frame = Frame(root, width=300, height=600, bd=1, relief="solid")
+left_frame = Frame(root, width=300, height=600)
 left_frame.grid(column=0, row=0, sticky="nswe", padx=30, pady=30)
 
 right_frame = Frame(root, width=300, height=600)
@@ -263,6 +287,15 @@ left_frame.grid_columnconfigure(2, weight=2)
 next_month_button = Button(left_frame, text=">", font=("Arial", 20), bd=0, relief="flat", command=next_month)
 next_month_button.grid(row=0, column=3, pady=(100, 0))
 left_frame.grid_columnconfigure(3, weight=2)
+
+# Mostrar eventos por venir
+upcoming_events_label = Label(left_frame, text="Upcoming events", font=("Arial", 16))
+upcoming_events_label.grid(row=1, column=0, columnspan=4, pady=(50, 10))
+
+upcoming_events = Frame(left_frame, width=300, height=200)
+
+# Mostrar los eventos por venir
+update_upcoming_events(created_events)
 
 # Configurar el calendario
 update_days()
