@@ -6,3 +6,8 @@ class Event:
         self.date = date
         self.time = time
 
+class Day:
+        
+    def __init__(self, day, events):
+        self.day = day
+        self.events = events
