@@ -6,8 +6,7 @@ root.title("Schedule Me")
 
 days = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA']
 
-column_count = 0
-row_count = 0
+
 
 left_frame = Frame(root, width=300, height=600, bd=1, relief="solid")
 left_frame.grid(column=0, row=0, sticky="nswe", padx=30, pady=30)
@@ -34,8 +33,9 @@ space_label.grid(row=2, column=0, columnspan=2)
 incoming_events_frame = Frame(left_frame, width=300, height=300)
 incoming_events_frame.grid(row=3, column=0, columnspan=2)
 
+# Eventos que estan por llegar
 events_label_text = "hola" 
-events_label = Label(incoming_events_frame, text=events_label_text, font=("Arial", 20))
+events_label = Label(incoming_events_frame, text=events_label_text, font=("Arial", 20), wraplength=200, anchor="w")
 events_label.grid(row=0, column=0, sticky="nswe")
 incoming_events_frame.rowconfigure(0, weight=1)
 
@@ -43,21 +43,28 @@ incoming_events_frame.rowconfigure(0, weight=1)
 for i in range(7): 
     right_frame.grid_columnconfigure(i, weight=1)
 
-for i in range(8): 
+for i in range(7): 
     right_frame.grid_rowconfigure(i, weight=1)
 
-for i in range(56):
+column_count = 0
+row_count = 0
 
-    if row_count == 0:
-        label = Label(right_frame, text=days[column_count], padx=15, pady=15, font=("Arial", 25))
-        label.grid(row=row_count, column=column_count, sticky="nswe")
+for index, day in enumerate(days):
+    label = Label(right_frame, text=day, padx=15, pady=15, font=("Arial", 25))
+    label.grid(row=row_count, column=column_count, sticky="nswe")
+    column_count += 1
+
+row_count += 1
+column_count = 0
+
+for i in range(42):
+
+    if i < 10:
+        button = Button(right_frame, text=str(i), font=("Arial", 14), padx=18, pady=15, bd=1, relief="solid")
     else:
-        if i < 10:
-            button = Button(right_frame, text=str(i), font=("Arial", 14), padx=18, pady=15, bd=1, relief="solid")
-        else:
-            button = Button(right_frame, text=str(i), font=("Arial", 14), padx=15, pady=15, bd=1, relief="solid")
+        button = Button(right_frame, text=str(i), font=("Arial", 14), padx=15, pady=15, bd=1, relief="solid")
 
-        button.grid(row=row_count, column=column_count, sticky="nswe")
+    button.grid(row=row_count, column=column_count, sticky="nswe")
     column_count += 1
     if column_count == 7:
         column_count = 0
