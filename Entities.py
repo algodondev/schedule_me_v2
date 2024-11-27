@@ -8,6 +8,7 @@ class Event:
 
 class Day:
         
-    def __init__(self, day, events):
+    def __init__(self, day, date, events):
         self.day = day
+        self.date = date
         self.events = events

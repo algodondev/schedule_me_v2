@@ -1,6 +1,5 @@
 from tkinter import *
 from entities import *
-
 import datetime
 import calendar  
 
@@ -15,33 +14,26 @@ current_day = current_date.strftime('%A')  # El nombre del día completo (e.g., 
 current_month = current_date.strftime('%B')  # Nombre del mes (e.g., "September")
 current_year = current_date.year
 
-# print(current_date)
-# print(current_day)
-# print(current_month)
-# print(current_year)
-# print("*" * 50)
-
 # Obtener la distribución de los días del mes (comenzando en domingo)
 first_day_of_month = datetime.date(current_year, current_date.month, 1)
 start_day_of_week = first_day_of_month.weekday()  # 0 = Monday, 6 = Sunday (en Python)
 start_day_of_week = (start_day_of_week + 1) % 7  # Ajuste para que el domingo sea 0
 
-# print(first_day_of_month)
-# print(start_day_of_week)
-# print("*" * 50)
-
 # Obtener el número de días del mes
 days_in_month = (datetime.date(current_year, current_date.month + 1, 1) - first_day_of_month).days
-
-# print(days_in_month)
-# print("*" * 50)
 
 # Obtener el número de días del mes anterior usando calendar
 previous_month = current_date.replace(month=current_date.month - 1 if current_date.month > 1 else 12)
 days_in_previous_month = calendar.monthrange(previous_month.year, previous_month.month)[1]
 
-# print(previous_month)
-# print(days_in_previous_month)
+# Lista para almacenar las instancias de Day
+month_days_instances = []
+
+# Crear un objeto 'Day' para cada día del mes actual
+for day in range(1, days_in_month + 1):
+    day_date = datetime.date(current_year, current_date.month, day)
+    day_obj = Day(day, day_date, [])  # Inicializamos 'events' como una lista vacía
+    month_days_instances.append(day_obj)
 
 left_frame = Frame(root, width=300, height=600, bd=1, relief="solid")
 left_frame.grid(column=0, row=0, sticky="nswe", padx=30, pady=30)
@@ -50,7 +42,6 @@ right_frame = Frame(root, width=300, height=600, bg="red")
 right_frame.grid(column=1, row=0, sticky="nswe", padx=30, pady=30)
 
 # Colocar informacion en el frame izquierdo
-
 month_label = Label(left_frame, text=current_month, font=("Arial", 50))
 month_label.grid(row=0, column=0, pady=(100, 0))
 left_frame.grid_columnconfigure(0, weight=2)
@@ -95,10 +86,6 @@ column_count = 0
 
 # Mostrar días del mes anterior deshabilitados
 previous_month_day = days_in_previous_month - start_day_of_week + 1  # Empezamos con el último día del mes anterior
-
-# print("*" * 50)	
-# print(previous_month_day)
-
 for i in range(start_day_of_week):  # Espacios en blanco antes del primer día del mes
     button = Button(right_frame, text=str(previous_month_day), font=("Arial", 14), padx=15, pady=15, bg="lightgray", state="disabled", bd=1, relief="solid")
     button.grid(row=row_count, column=column_count, sticky="nswe")
@@ -106,8 +93,8 @@ for i in range(start_day_of_week):  # Espacios en blanco antes del primer día d
     previous_month_day += 1
 
 # Colocar los días del mes
-for day in range(1, days_in_month + 1):
-    button = Button(right_frame, text=str(day), font=("Arial", 14), padx=15, pady=15, bd=1, relief="solid")
+for day_instance in month_days_instances:
+    button = Button(right_frame, text=str(day_instance.day), font=("Arial", 14), padx=15, pady=15, bd=1, relief="solid")
     button.grid(row=row_count, column=column_count, sticky="nswe")
     column_count += 1
 
