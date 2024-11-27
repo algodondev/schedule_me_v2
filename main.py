@@ -124,11 +124,43 @@ def show_modal(day_instance):
     
     # Etiqueta con la fecha
     modal_title = Label(events_modal, text=title_text, font=("Arial", 18))
-    modal_title.grid(row=0, column=0, pady=10, padx=40)
+    modal_title.grid(row=0, column=0, pady=10, padx=40, columnspan=2)
+
+    # Mostrar los eventos del día
+    events_frame = Frame(events_modal, bd=1, relief="solid", pady=30, padx=50)
+    events_frame.grid(row=1, column=0, pady=10, padx=40)
+
+    for i in range(4):
+        label = Label(events_frame, text=f"Event {i}", font=("Arial", 14))
+        label.grid(row=i, column=0, pady=10, padx=30)
+
+        delete_button = Button(events_frame, text="Delete", font=("Arial", 14), bg="red", fg="white")
+        delete_button.grid(row=i, column=1, pady=10, padx=30)
+
+    # Campos para agregar un nuevo evento
+    fields_frame = Frame(events_modal)
+    fields_frame.grid(row=1, column=1, pady=10, padx=40)
+
+    event_title_label = Label(fields_frame, text="Event title", font=("Arial", 14))
+    event_title_label.grid(row=0, column=0, pady=10, padx=40)
+    event_title_entry = Entry(fields_frame, font=("Arial", 14))
+    event_title_entry.grid(row=1, column=0, pady=10, padx=40)
+
+    event_description_label = Label(fields_frame, text="Event description", font=("Arial", 14))
+    event_description_label.grid(row=2, column=0, pady=10, padx=40)
+    event_description_entry = Entry(fields_frame, font=("Arial", 14))
+    event_description_entry.grid(row=3, column=0, pady=10, padx=40)
+
+    event_save_button = Button(fields_frame, text="Save", font=("Arial", 14), bg="green", fg="white")
+    event_save_button.grid(row=4, column=0, pady=10, padx=40)
+
+    # Boton para agregar un nuevo evento
+    add_event_button = Button(events_modal, text="Add event", font=("Arial", 14), bg="blue", fg="white")
+    add_event_button.grid(row=2, column=0, pady=10, padx=40, columnspan=2)
 
     # Botón para cerrar el modal
-    close_button = Button(events_modal, text="Cerrar", command=events_modal.destroy)
-    close_button.grid(row=2, column=0, pady=10)
+    # close_button = Button(events_modal, text="Cerrar", command=events_modal.destroy)
+    # close_button.grid(row=2, column=0, pady=10)
     
 # Crear la interfaz
 left_frame = Frame(root, width=300, height=600, bd=1, relief="solid")
