@@ -13,6 +13,7 @@ current_date = datetime.date.today()
 current_month = current_date.month
 current_year = current_date.year
 month_days_instances = []
+created_events = []
 
 # Funciones para cambiar el mes
 def previous_month():
@@ -122,9 +123,69 @@ def update_days():
         button.grid(row=row_count, column=i, sticky="nswe")
         next_month_day += 1
 
-# Función para mostrar el modal con la fecha completa
+# Función para mostrar el modal de eventos
 def show_modal(day_instance):
-    # Crear la ventana emergente (modal)
+    global created_events
+
+    # Events functions
+    def activate_event_form():
+        event_title_entry.config(state="normal")
+        event_description_entry.config(state="normal")
+        event_save_button.config(state="normal")
+        event_time_dropdown_entry.config(state="normal")
+
+        add_event_button.config(state="disabled")
+
+    def deactivate_event_form():
+        event_title_entry.delete(0, END)
+        event_description_entry.delete(0, END)
+
+        event_title_entry.config(state="disabled", text="")
+        event_description_entry.config(state="disabled", text="")
+        event_time_dropdown_entry.config(state="disabled")
+
+        event_save_button.config(state="disabled")
+
+        add_event_button.config(state="normal")
+
+    def show_events(events):
+        for i, event in enumerate(events):
+
+            if event.date == day_instance.date:
+                label = Label(events_frame, text=f"{event.title}: {event.description} - {event.time}", font=("Arial", 14))
+                label.grid(row=i, column=0, pady=10, padx=30)
+
+                delete_button = Button(events_frame, text="Delete", font=("Arial", 14), bg="red", fg="white", command=lambda: delete_event(events, event, label, delete_button, events_frame))
+                delete_button.grid(row=i, column=1, pady=10, padx=30)
+
+    def reset_events_frame(events, frame):
+        
+        for widget in frame.winfo_children():
+            widget.destroy()
+        
+        show_events(events)
+
+    def save_event(day_instance, title, description, time):
+        global created_events
+        
+        event = Event(title, description, day_instance.date, time)
+        created_events.append(event)
+
+        deactivate_event_form()
+
+        reset_events_frame(created_events, events_frame)
+
+    # Eliminar evento
+    def delete_event(events, event, label_widget, button_widget, frame):
+        
+        label_widget.destroy()
+        button_widget.destroy()
+
+        events.remove(event)
+
+        reset_events_frame(events, frame)
+
+    # Crear la ventana modal
     events_modal = Toplevel(root)
     events_modal.title(f"Day {day_instance.day} details")
 
@@ -144,12 +205,7 @@ def show_modal(day_instance):
     events_frame = Frame(events_modal, width=300, height=200, bd=1, relief="solid", pady=30, padx=50)
     events_frame.grid(row=1, column=0, pady=10, padx=40)
 
-    for i in range(4):
-        label = Label(events_frame, text=f"Event {i}", font=("Arial", 14))
-        label.grid(row=i, column=0, pady=10, padx=30)
-
-        delete_button = Button(events_frame, text="Delete", font=("Arial", 14), bg="red", fg="white")
-        delete_button.grid(row=i, column=1, pady=10, padx=30)
+    show_events(created_events)
 
     # Campos para agregar un nuevo evento
     fields_frame = Frame(events_modal)
@@ -157,19 +213,30 @@ def show_modal(day_instance):
 
     event_title_label = Label(fields_frame, text="Event title", font=("Arial", 14))
     event_title_label.grid(row=0, column=0, pady=10, padx=40)
-    event_title_entry = Entry(fields_frame, font=("Arial", 14))
+    event_title_entry = Entry(fields_frame, font=("Arial", 14), state="disabled")
     event_title_entry.grid(row=1, column=0, pady=10, padx=40)
 
     event_description_label = Label(fields_frame, text="Event description", font=("Arial", 14))
     event_description_label.grid(row=2, column=0, pady=10, padx=40)
-    event_description_entry = Entry(fields_frame, font=("Arial", 14))
+    event_description_entry = Entry(fields_frame, font=("Arial", 14), state="disabled")
     event_description_entry.grid(row=3, column=0, pady=10, padx=40)
 
-    event_save_button = Button(fields_frame, text="Save", font=("Arial", 14), bg="green", fg="white")
-    event_save_button.grid(row=4, column=0, pady=10, padx=40)
+    # Generar las opciones para el dropdown (en formato HH:MM)
+    hours = [f"{h:02}:{m:02}" for h in range(24) for m in [0, 15, 30, 45]]
+
+    # Crear el dropdown con las horas
+    selected_time = StringVar()
+    selected_time.set(hours[24])  # Establecer un valor predeterminado
+
+    event_time_dropdown_entry = OptionMenu(fields_frame, selected_time, *hours)
+    event_time_dropdown_entry.config(width=8, font=("Arial", 10), state="disabled")
+    event_time_dropdown_entry.grid(row=4, column=0, pady=10, padx=40)
+
+    event_save_button = Button(fields_frame, text="Save", font=("Arial", 14), bg="green", fg="white", state="disabled", command=lambda: save_event(day_instance, event_title_entry.get(), event_description_entry.get(), ))
+    event_save_button.grid(row=5, column=0, pady=10, padx=40)
 
     # Boton para agregar un nuevo evento
-    add_event_button = Button(events_modal, text="Add event", font=("Arial", 14), bg="blue", fg="white")
+    add_event_button = Button(events_modal, text="Add event", font=("Arial", 14), bg="blue", fg="white", command= activate_event_form)
     add_event_button.grid(row=2, column=0, pady=10, padx=40, columnspan=2)
 
     
@@ -177,7 +244,7 @@ def show_modal(day_instance):
 left_frame = Frame(root, width=300, height=600, bd=1, relief="solid")
 left_frame.grid(column=0, row=0, sticky="nswe", padx=30, pady=30)
 
-right_frame = Frame(root, width=300, height=600, bg="pink")
+right_frame = Frame(root, width=300, height=600)
 right_frame.grid(column=1, row=0, sticky="nswe", padx=30, pady=30)
 
 # Colocar elementos en el frame izquierda
