@@ -289,7 +289,7 @@ next_month_button.grid(row=0, column=3, pady=(100, 0))
 left_frame.grid_columnconfigure(3, weight=2)
 
 # Mostrar eventos por venir
-upcoming_events_label = Label(left_frame, text="Upcoming events", font=("Arial", 16))
+upcoming_events_label = Label(left_frame, text="Events:", font=("Arial", 16))
 upcoming_events_label.grid(row=1, column=0, columnspan=4, pady=(50, 10))
 
 upcoming_events = Frame(left_frame, width=300, height=200)
