@@ -375,4 +375,6 @@ for i in range(7):  # 7 columnas para los días
 for i in range(7):  # 7 filas para los días (máximo 7 filas)
     right_frame.grid_rowconfigure(i, weight=1, uniform="equal")
 
+# Ejecutar el loop principal, que muestra la aplicacion
 root.mainloop()
+
