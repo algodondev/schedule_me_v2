@@ -155,21 +155,25 @@ def update_days():
 
 #Funcion para actualizar los eventos futuros
 def update_upcoming_events(events):
+    #Destruye los widget actuales
     for widget in upcoming_events.winfo_children():
         widget.destroy()
 
+    #Ordena los eventos que existen segun las fechas
     events = sorted(events, key=lambda x: x.date)
 
+    #Por cada evento, crea un label con su informacion y lo agrrega a la grid 
     for i, event in enumerate(events):
         label = Label(upcoming_events, text=f"{event.title}: {event.description} - {event.date} - {event.time}", font=("Arial", 14))
         label.grid(row=i, column=0, pady=10, padx=30)
 
+    #Agrega upcoming events a la grid
     upcoming_events.grid(row=2, column=0, columnspan=4, pady=10)
     
-# Función para mostrar el modal de eventos
+# Función para mostrar el modal de eventos, ventana al seleccionar un dia
 def show_modal(day_instance):
     global created_events
-
+    
     # -- Funciones de los eventos -- #
     
     # Funcion para activar evento
