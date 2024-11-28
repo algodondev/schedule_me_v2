@@ -1,49 +1,63 @@
-from tkinter import *
-from entities import *
-import datetime
-import calendar
+'''
+ScheduleMe
+'''
+from tkinter import * #Interfaz grafica
+from entities import * #Archivo de clases
+import datetime #Libreria 
+import calendar #Liberia
 
+# Configurar la ventana principal de tkinter
 root = Tk()
-root.title("Schedule Me")
+root.title("Schedule Me") #Titulo de la ventana 
 
+#Lista con los nombres abreviados de los dias de la semana
 days = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA']
 
 # Variables globales
-current_date = datetime.date.today()
-current_month = current_date.month
-current_year = current_date.year
-month_days_instances = []
-created_events = []
+current_date = datetime.date.today() #Fecha actual 
+current_month = current_date.month #Mes actual
+current_year = current_date.year #Año actual
+month_days_instances = [] # Lista de instancias de dias del mes
+created_events = [] #Lista de eventos creados
 
-# Funciones para cambiar el mes
+# -- Funciones para la navegacion del calendario --- # 
 def previous_month():
+    #Regresa al mes anterior
+    #Tomar variables globales de mes, año y dias del mes
     global current_month, current_year, month_days_instances
+    #Si es enero, retrocede al año anterior
     if current_month == 1:
         current_month = 12
         current_year -= 1
     else:
         current_month -= 1
-    update_days()
+    update_days() #Llamar a la funcion para actualizar los cambios
 
 def next_month():
+    #Cambiar al mes sigueinte
+    #Tomar variables globales
     global current_month, current_year, month_days_instances
+    #Si el mes es diciembre, avanza al año siguiente
     if current_month == 12:
         current_month = 1
         current_year += 1
     else:
         current_month += 1
-    update_days()
+    update_days() 
 
-# Función para actualizar los días del mes
+# -- Función para actualizar los días del mes -- #
 def update_days():
+    #Actualiza la vista del calendario segun el mes y año del momento
+    #Muestra los dias del mes, incluye dias del mes anterior y siguiente (para completar el cuadro)
     global month_days_instances
+    #Limpiar los widget existentes, para luego poner los nuevos
     for widget in right_frame.winfo_children():
         widget.destroy()
 
     # Obtener la fecha del primer día del mes
-    first_day_of_month = datetime.date(current_year, current_month, 1)
-    start_day_of_week = first_day_of_month.weekday()  # 0 = Monday, 6 = Sunday
-    start_day_of_week = (start_day_of_week + 1) % 7  # Ajuste para que el domingo sea 0
+    first_day_of_month = datetime.date(current_year, current_month, 1) #Año, mes, dia del mes (primer dia)
+    start_day_of_week = first_day_of_month.weekday()  # 0 = Monday, 6 = Sunday (por defecto)
+    start_day_of_week = (start_day_of_week + 1) % 7  # Ajuste para que el domingo sea 0 (pasar a indexado en 1 y sacar modulo 7)
 
     # Obtener el número de días del mes
     if current_month == 12:
