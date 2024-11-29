@@ -13,6 +13,9 @@ root.title("Schedule Me") #Titulo de la ventana
 #Lista con los nombres abreviados de los dias de la semana
 days = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA']
 
+# Contador de eventos para asignar id
+id_counter = 1
+
 # Variables globales
 current_date = datetime.date.today() #Fecha actual 
 current_month = current_date.month #Mes actual
@@ -81,7 +84,7 @@ def update_days():
     # Crear un objeto 'Day' para cada día del mes actual
     for day in range(1, days_in_month + 1):
         day_date = datetime.date(current_year, current_month, day) #Tomar la fecha con año, mes y numero del dia
-        day_obj = Day(day, day_date, [])  # Inicializamos 'events' como una lista vacía
+        day_obj = Day(day, day_date)
         month_days_instances.append(day_obj) #Agregarlo a la lista
 
     # Mostrar el mes y el año 
@@ -216,7 +219,7 @@ def show_modal(day_instance):
                 label.grid(row=i, column=0, pady=10, padx=30) #agregarlo a la grid
                 #Crear el boton de delete
                 #PENDIENTE DE CORRECION
-                delete_button = Button(events_frame, text="Delete", font=("Arial", 14), bg="red", fg="white", command=lambda: delete_event(events, event, label, delete_button, events_frame))
+                delete_button = Button(events_frame, text="Delete", font=("Arial", 14), bg="red", fg="white", command=lambda ev_id=event.event_id: delete_event(ev_id, label, delete_button, events_frame))
                 delete_button.grid(row=i, column=1, pady=10, padx=30) #agregar al lado del evento
 
     #Funcion para reiniciar el frame de eventos 
@@ -229,9 +232,11 @@ def show_modal(day_instance):
 
     #Funcion para guardar eventos
     def save_event(day_instance, title, description, time):
-        global created_events
+        global created_events, id_counter
         #Crear la clase evento
-        event = Event(title, description, day_instance.date, time)
+        event = Event(title, description, day_instance.date, time, id_counter)
+        # Aumentar el id counter para 
+        id_counter+=1
         created_events.append(event) #agregar a la lista de eventos creados
 
         deactivate_event_form() #desactivar el form de eventos
@@ -240,14 +245,19 @@ def show_modal(day_instance):
 
     # Eliminar un evento
     # Pendiente de correcion**
-    def delete_event(events, event, label_widget, button_widget, frame):
+    def delete_event(event_id, label_widget, button_widget, frame):
+        global created_events
+
+        print(event_id)
         
         label_widget.destroy()
         button_widget.destroy()
 
-        events.remove(event)
+        for ev in created_events:
+            if ev.event_id == event_id:
+                created_events.remove(ev)
 
-        reset_events_frame(events, frame)
+        reset_events_frame(created_events, frame)
 
     # -- Codigo para la creacion de la ventana -- #
     # Crear la ventana modal
