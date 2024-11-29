@@ -149,7 +149,7 @@ def update_days():
     # Agregar los días que sobran del mes siguiente con botones deshabilitados
     next_month_day = 1
     for i in range(column_count, 7):  # Rellenar con botones deshabilitados si no se completó la semana
-        button = Button(right_frame, text=str(next_month_day), font=("Arial", 14), bg="lightgray", padx=15, pady=15, state="disabled")
+        button = Button(right_frame, text=str(next_month_day), font=("Arial", 14), bg="lightgray", padx=15, pady=15, state="disabled", bd=1, relief="solid")
         button.grid(row=row_count, column=i, sticky="nswe")
         next_month_day += 1
 
