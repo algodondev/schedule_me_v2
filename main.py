@@ -165,11 +165,11 @@ def update_upcoming_events(events):
 
     #Por cada evento, si el evento es de la fecha actual o futura, crea un label con su informacion y lo agrrega a la grid 
     for i, event in enumerate(events):
-        if event.date >= current_date:
+        if event.date >= current_date: #Si el evento es proximo a realizarse, entonces lo muestra en upcoming events.
             label = Label(upcoming_events, text=f"{event.title}: {event.description} - {event.date} - {event.time}", font=("Arial", 14))
             label.grid(row=i, column=0, pady=10, padx=30)
         else:
-            continue
+            continue #en caso contario, lo ignora y sigue adelante
 
     #Agrega upcoming events a la grid
     upcoming_events.grid(row=2, column=0, columnspan=4, pady=10)
