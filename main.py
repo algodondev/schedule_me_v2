@@ -250,15 +250,13 @@ def show_modal(day_instance):
     def delete_event(event_id, label_widget, button_widget, frame):
         global created_events
 
-        print(event_id)
-        
         label_widget.destroy()
         button_widget.destroy()
-
+        #Revisar en la lista de todos los eventos creados
         for ev in created_events:
             if ev.event_id == event_id:
-                created_events.remove(ev)
-
+                created_events.remove(ev) #Remover el evento con el id seleccionado
+        #Actualizar events_frame
         reset_events_frame(created_events, frame)
 
     # -- Codigo para la creacion de la ventana -- #
