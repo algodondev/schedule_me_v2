@@ -247,7 +247,6 @@ def show_modal(day_instance):
         reset_events_frame(created_events, events_frame) #reiniciar el frame de eventos
 
     # Eliminar un evento
-    # Pendiente de correcion**
     def delete_event(event_id, label_widget, button_widget, frame):
         global created_events
 
