@@ -185,8 +185,11 @@ def show_modal(day_instance):
     
     # Funcion para activar evento
     def activate_event_form():
+        global id_counter
+        
         #Configurar las entradas y botones para recibir titulo y descripcion del evento
         event_title_entry.config(state="normal")
+        event_title_entry.insert(0, f"Event {id_counter}")
         event_description_entry.config(state="normal")
         event_save_button.config(state="normal")
         event_time_dropdown_entry.config(state="normal")
