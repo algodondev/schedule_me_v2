@@ -307,7 +307,10 @@ def show_modal(day_instance):
 
     # Crear un menu dropdown con las horas disponibles para el evento
     # Generar las opciones para el dropdown (en formato HH:MM)
-    hours = [f"{h:02}:{m:02}" for h in range(24) for m in [0, 15, 30, 45]]
+    hours = []
+    for h in range(24):
+        for m in [0, 15, 30, 45]:
+            hours.append(f"{h:02}:{m:02}")
 
     # Crear el dropdown con las horas
     selected_time = StringVar()
