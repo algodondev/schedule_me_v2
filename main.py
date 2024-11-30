@@ -73,9 +73,13 @@ def update_days():
 
     #-- Encontrar los dias del mes previo y siguiente para rellenar la cuadricula -- 
     # Obtener el número de días del mes anterior usando calendar
-    previous_month_date = current_date.replace(month=current_month - 1 if current_month > 1 else 12) #tomar el mes anterior
+    if current_month == 1:
+        temp = 12
+    else:
+        temp = current_month - 1
+    previous_month_date = current_date.replace(month = temp, day = calendar.monthrange(current_year, temp)[1]) #tomar el mes anterior
     days_in_previous_month = calendar.monthrange(previous_month_date.year, previous_month_date.month)[1]
-
+    
     # Lista para almacenar las instancias de la clase Day
     month_days_instances.clear()
 
