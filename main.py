@@ -13,10 +13,8 @@ root.title("Schedule Me") #Titulo de la ventana
 #Lista con los nombres abreviados de los dias de la semana
 days = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA']
 
-# Contador de eventos para asignar id
-id_counter = 1
-
 # Variables globales
+id_counter = 1 # Contador de eventos para asignar id
 current_date = datetime.date.today() #Fecha actual 
 current_month = current_date.month #Mes actual
 current_year = current_date.year #Año actual
@@ -185,31 +183,31 @@ def show_modal(day_instance):
     
     # Funcion para activar evento
     def activate_event_form():
-        global id_counter
+        global id_counter #recurre a id_counter para asignar un titulo por defecto
         
         #Configurar las entradas y botones para recibir titulo y descripcion del evento
-        event_title_entry.config(state="normal")
-        event_title_entry.insert(0, f"Event {id_counter}")
-        event_description_entry.config(state="normal")
-        event_save_button.config(state="normal")
-        event_time_dropdown_entry.config(state="normal")
+        event_title_entry.config(state="normal") #entrada de titulo
+        event_title_entry.insert(0, f"Event {id_counter}") #Asigna un titulo por defecto al evento
+        event_description_entry.config(state="normal") #entrada de descripcion
+        event_save_button.config(state="normal") #boton de guardar
+        event_time_dropdown_entry.config(state="normal") #menu con las opciones de horas
 
-        add_event_button.config(state="disabled")
+        add_event_button.config(state="disabled") #boton de guardar 
         
     # Funcion para desactivar evento 
     def deactivate_event_form():
         #Borrar las entradas de titulo y descripcion del evento
-        event_title_entry.delete(0, END)
-        event_description_entry.delete(0, END)
+        event_title_entry.delete(0, END) #Limpiar
+        event_description_entry.delete(0, END) #Limpiar
 
         #Deshabilitar las entradas 
-        event_title_entry.config(state="disabled", text="")
-        event_description_entry.config(state="disabled", text="")
-        event_time_dropdown_entry.config(state="disabled")
+        event_title_entry.config(state="disabled", text="") #entrada de titulo
+        event_description_entry.config(state="disabled", text="") #entrada de descripcion
+        event_time_dropdown_entry.config(state="disabled") #menu de horas
 
-        event_save_button.config(state="disabled")
+        event_save_button.config(state="disabled") #boton de guardar
 
-        add_event_button.config(state="normal")
+        add_event_button.config(state="normal") #boton de agregar evento
         
     #Funcion para mostrar eventos 
     def show_events(events):
@@ -235,11 +233,11 @@ def show_modal(day_instance):
 
     #Funcion para guardar eventos
     def save_event(day_instance, title, description, time):
-        global created_events, id_counter
-        #Crear la clase evento
-        event = Event(title, description, day_instance.date, time, id_counter)
-        # Aumentar el id counter para 
-        id_counter+=1
+        global created_events, id_counter #revisar la lista de eventos creados y el contador de id
+        #Crear la instancia de clase evento
+        event = Event(title, description, day_instance.date, time, id_counter) 
+        
+        id_counter+=1 # Aumentar el id counter para futuros eventos
         created_events.append(event) #agregar a la lista de eventos creados
 
         deactivate_event_form() #desactivar el form de eventos
@@ -248,16 +246,17 @@ def show_modal(day_instance):
 
     # Eliminar un evento
     def delete_event(event_id, label_widget, button_widget, frame):
-        global created_events
+        global created_events #revisar los eventos creados
 
+        #borrar la etiqueta y el boton del evento
         label_widget.destroy()
         button_widget.destroy()
         #Revisar en la lista de todos los eventos creados
         for ev in created_events:
-            if ev.event_id == event_id:
+            if ev.event_id == event_id: #Recorrer y buscar el evento especifico
                 created_events.remove(ev) #Remover el evento con el id seleccionado
         #Actualizar events_frame
-        reset_events_frame(created_events, frame)
+        reset_events_frame(created_events, frame) 
 
     # -- Codigo para la creacion de la ventana -- #
     # Crear la ventana modal
