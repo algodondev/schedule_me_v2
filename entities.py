@@ -3,7 +3,7 @@
 class Event:
     #Funcion constructura, recibe los parametros 
     def __init__(self, title, description, date, time, event_id):
-        self.event_id = event_id
+        self.event_id = event_id #id del evento
         self.title = title #titulo del evento, texto
         self.description = description #descripcion del evento, texto
         self.date = date #la fecha
